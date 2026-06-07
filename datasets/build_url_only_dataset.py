@@ -145,8 +145,11 @@ def normalize_url(raw: str) -> str | None:
         return None
     if "://" not in value:
         value = "https://" + value
-    parsed = urlparse(value)
-    host = (parsed.hostname or "").strip(".").lower()
+    try:
+        parsed = urlparse(value)
+        host = (parsed.hostname or "").strip(".").lower()
+    except ValueError:
+        return None
     if not host or "." not in host or not HOST_RE.match(host):
         return None
     if len(host) > 253 or any(len(part) > 63 for part in host.split(".")):

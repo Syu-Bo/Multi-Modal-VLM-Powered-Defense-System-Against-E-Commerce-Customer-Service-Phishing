@@ -1,0 +1,38 @@
+{
+  "source_csv": "phishing_site_urls.csv",
+  "task": "URL-only phishing classification",
+  "seed": 20260605,
+  "eval_ratio": 0.1,
+  "requested_benign_to_phishing_ratio": 1.0,
+  "requested_total_rows": 600,
+  "raw_cleanable_counts": {
+    "good": 392759,
+    "bad": 154204,
+    "skipped": 2383
+  },
+  "deduped_clean_counts": {
+    "good": 392732,
+    "bad": 112757
+  },
+  "selected_counts": {
+    "benign": 300,
+    "phishing": 300,
+    "benign_to_phishing_ratio": 1.0
+  },
+  "train_counts": {
+    "rows": 540,
+    "benign": 270,
+    "phishing": 270
+  },
+  "eval_counts": {
+    "rows": 60,
+    "benign": 30,
+    "phishing": 30
+  },
+  "files": {
+    "train": "url_train.jsonl",
+    "eval": "url_eval.jsonl",
+    "train_sources": "url_train_sources.csv",
+    "eval_sources": "url_eval_sources.csv"
+  }
+}

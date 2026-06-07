@@ -1,3 +1,4 @@
+import os
 import json
 import time
 import re
@@ -19,8 +20,8 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 OUTPUT_PATH = OUTPUT_DIR / "prompt_v3_results.json"
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL_NAME = "llama3.1:8b"
+OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434/api/generate")
+MODEL_NAME = os.environ.get("EVAL_MODEL", "llama3.1:8b")
 
 
 # =========================

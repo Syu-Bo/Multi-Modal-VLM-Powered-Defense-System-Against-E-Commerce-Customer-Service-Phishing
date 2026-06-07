@@ -16,6 +16,7 @@ Multi-Modal VLM-Powered Defense System Against E-Commerce & Customer-Service Phi
 使用者輸入 URL
       │  fetch_page() 抓取 HTML / 可見文字 / 圖片 / 註冊網域
       ├──> Vision Track (VLM)  ──> vision risk_score
+      │     └─ QR 解碼子分析 ──> 圖內 QR 網域 vs 頁面網域不符 = 強訊號
       ├──> Text   Track (LLM)  ──> text   risk_score
       ├──> URL    Track (LLM)  ──> url    risk_score（僅吃 URL 字串）
       ▼
@@ -48,6 +49,11 @@ eval/
   results/                       # 評估結果 JSON
 lora/
   train_lora_unsloth.py          # LoRA / QLoRA 訓練（實際以 Unsloth Studio 進行）
+qr/
+  qr_decode.py                   # QR 解碼 + 網域不符偵測（補 proposal 案例一盲區）
+  testdata/                      # 釣魚 / 合法 QR 測試圖
+playbook/
+  playbook_generator.py          # 高風險 → Whois/165 檢舉信/使用者宣導 處置 playbook
 report/
   final_report.tex               # Week 16 整合報告（ctexart，xelatex）
   Makefile                       # make → final_report.pdf
@@ -55,7 +61,7 @@ report/
 
 ## 環境需求
 
-- Python 3.10+（`requests`, `numpy`, `scikit-learn`, `tqdm`, `pyarrow`, `pillow`）
+- Python 3.10+（`requests`, `numpy`, `scikit-learn`, `tqdm`, `pyarrow`, `pillow`；QR 模組需 `opencv-python`，`pyzbar` 可選）
 - 推論後端：Ollama（文字/URL 分支）＋ 一個 OpenAI-compatible 視覺端點（視覺分支）
 - 報告：XeLaTeX + `ctex`（中文字型）
 - **模型**：正式數字以 `llama3.1:8b` 為準（8b/GPU 機器）；`llama3.2:3b` 僅供 Mac smoke test。
@@ -95,6 +101,8 @@ cd report && make
 | 視覺 | 🟡 資料就緒；待跑 P/R/F1 |
 | 融合 | 🟡 143 頁對齊集就緒；待 text+visual 結果 |
 | LoRA | 🟡 文字已試訓（Unsloth）；待補 Hard Sample、修 dataset shortcut |
+| QR 解碼 | ✅ 完成（OpenCV，網域不符偵測，補案例一）|
+| Playbook | ✅ 完成（Whois / 165 檢舉信 / 使用者宣導）|
 
 已知限制（詳見報告 Limitations）：模型容量（3b 太弱）、視覺弱標註、文字資料不平衡、
 LoRA dataset shortcut、valid 規模小、推論延遲高。

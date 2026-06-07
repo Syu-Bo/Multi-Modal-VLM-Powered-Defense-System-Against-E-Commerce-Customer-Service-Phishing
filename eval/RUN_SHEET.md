@@ -3,6 +3,23 @@
 Mac 端（3b）只做架構/腳本調通，**正式數字請在這台機器用 8b + 視覺模型跑**。
 所有腳本走 `PROJECT_ROOT` 相對路徑，不需要改 `C:\project` 硬路徑。
 
+## 為什麼一定要用 `llama3.1:8b`（不能用小模型交數字）
+
+在 Mac 上用 `llama3.2:3b` 跑 URL 分支（60 筆 1:1）的結果：
+**Precision 0.75 / Recall 0.20 / F1 0.316**。
+
+看漏判就知道問題在模型容量，不是資料：
+- 抓得到的只有尖叫式釣魚：`paypal.com.us.login.cgi-bin...`、`.../inst1.exe`
+- 漏掉全是要推理的：`unitystydiying.top`（可疑 TLD+仿冒字）、`bit.ly/...`（短網址）、
+  `221.194.44.194:9633`（裸 IP+怪 port）、被入侵正常站+重導參數
+
+3b 讀不出 gold 標註裡編碼的 URL 啟發式特徵（可疑 TLD / 裸 IP / 短網址 / 品牌 token 不符），
+只會 pattern match 教科書級樣本 → recall 崩。**8b 才有足夠容量做這類推理**，
+跨機器比較與報告數字一律以 8b 為準；3b 僅供 Mac 端 smoke test。
+
+> 延伸：`datasets/training_data/url_only_1to1/url_train.jsonl`（540 筆、1:1）gold 理由
+> 正好在教這些 URL 特徵，**適合拿去 LoRA**，預期把 recall 大幅拉升 —— 這就是「為什麼要 fine-tune」的實證。
+
 模型透過環境變數切換（預設值見各腳本）：
 
 | 變數 | 用途 | 建議值 |

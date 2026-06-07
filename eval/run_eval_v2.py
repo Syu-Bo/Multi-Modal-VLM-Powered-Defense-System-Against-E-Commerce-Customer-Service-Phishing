@@ -14,11 +14,11 @@ from sklearn.metrics import precision_score, recall_score, f1_score, confusion_m
 ALERT_THRESHOLD = 0.7
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DATA_PATH = PROJECT_ROOT / "datasets" / "text_valid.jsonl"
+DATA_PATH = Path(os.environ.get("EVAL_DATA", PROJECT_ROOT / "datasets" / "text_valid.jsonl"))
 OUTPUT_DIR = PROJECT_ROOT / "eval" / "results"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-OUTPUT_PATH = OUTPUT_DIR / "prompt_v2_results.json"
+OUTPUT_PATH = Path(os.environ.get("EVAL_OUTPUT", OUTPUT_DIR / "prompt_v2_results.json"))
 
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434/api/generate")
 MODEL_NAME = os.environ.get("EVAL_MODEL", "llama3.1:8b")

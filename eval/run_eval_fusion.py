@@ -70,14 +70,18 @@ def load_text(results_path, data_path):
 
 
 def load_visual(results_path):
+    """url -> {"score", "true"}. A page may have several screenshots; the page-level
+    visual risk is the MAX over its images (matches the VisualBranchClient rule)."""
     res = json.load(open(results_path, encoding="utf-8"))["results"]
     out = {}
     for r in res:
         url = r.get("page_url")
         if url is None or "pred_risk_score" not in r:
             continue
-        out[url] = {"score": float(r["pred_risk_score"]),
-                    "true": int(r.get("true_label", 0))}
+        score = float(r["pred_risk_score"])
+        true = int(r.get("true_label", 0))
+        if url not in out or score > out[url]["score"]:
+            out[url] = {"score": score, "true": true}
     return out
 
 

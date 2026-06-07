@@ -60,12 +60,38 @@ python eval\run_eval_visual.py
 資料：`datasets/visual_valid_studio.parquet`（106 筆）。
 
 ### ④ 融合對照（新增，**不呼叫模型**，純讀 ②③ 結果 join）
+
+**建議用對齊測試集（143 頁，文字＋截圖同頁），結論才穩。**
+先重生對齊集（parquet 不進 git，需本機產生）：
 ```bat
-python eval\run_eval_fusion.py
+python datasets\build_fusion_testset.py
 ```
-→ `eval/results/fusion_results.json` + 終端印出對照表：
-`text-only / visual-only / fuse(Wv 多組)`，並挑出最佳 Wv。
-text/visual 以 **Page URL** 對齊（valid∩valid 約 16 頁；要更多可改用對齊測試集）。
+→ `datasets/fusion_test/{text_fusion.jsonl, visual_fusion.parquet, pages.csv}`（143 頁、526 圖）
+
+在這份子集上各跑一次文字與視覺分支（用 EVAL_DATA / EVAL_OUTPUT 指定）：
+```bat
+set EVAL_MODEL=llama3.1:8b
+set EVAL_DATA=datasets\fusion_test\text_fusion.jsonl
+set EVAL_OUTPUT=eval\results\text_fusion_results.json
+python eval\run_eval_v2.py
+
+set EVAL_DATA=datasets\fusion_test\visual_fusion.parquet
+set EVAL_OUTPUT=eval\results\visual_fusion_results.json
+python eval\run_eval_visual.py
+set EVAL_DATA=
+set EVAL_OUTPUT=
+```
+再融合：
+```bat
+python eval\run_eval_fusion.py ^
+  --text-results eval\results\text_fusion_results.json ^
+  --text-data datasets\fusion_test\text_fusion.jsonl ^
+  --visual-results eval\results\visual_fusion_results.json
+```
+→ `eval/results/fusion_results.json` + 終端對照表：`text-only / visual-only / fuse(Wv 多組)`，挑出最佳 Wv。
+text/visual 以 **Page URL** 對齊；一頁多張截圖時，頁面視覺分數取**該頁所有圖的 max**。
+
+> 快速版：不想建對齊集，直接 `python eval\run_eval_fusion.py` 會用各自 valid 的交集（僅 ~16 頁），只適合 smoke test。
 
 ---
 

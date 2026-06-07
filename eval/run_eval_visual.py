@@ -43,7 +43,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = Path(os.environ.get("EVAL_DATA", PROJECT_ROOT / "datasets" / "visual_valid_studio.parquet"))
 OUTPUT_DIR = PROJECT_ROOT / "eval" / "results"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-OUTPUT_PATH = OUTPUT_DIR / "visual_results.json"
+OUTPUT_PATH = Path(os.environ.get("EVAL_OUTPUT", OUTPUT_DIR / "visual_results.json"))
 
 VISION_MODEL = os.environ.get("VISION_MODEL", "qwen2-vl")
 VISION_BASE_URL = os.environ.get("VISION_BASE_URL", "http://localhost:11434/v1")

@@ -48,7 +48,11 @@ def gold_label(answer):
 def load_text():
     """url -> (raw_jsonl_row, label). First occurrence wins."""
     out = {}
-    for name in ("text_train.jsonl", "text_valid.jsonl"):
+    # 優先用 clean 版（已去重 / 修錯標 / 無網域洩漏）；不存在才回退原始檔
+    pairs = [("text_train_clean.jsonl", "text_valid_clean.jsonl"),
+             ("text_train.jsonl", "text_valid.jsonl")]
+    names = next((p for p in pairs if (HERE / p[0]).exists()), pairs[-1])
+    for name in names:
         p = HERE / name
         if not p.exists():
             continue

@@ -42,12 +42,19 @@ python eval\run_eval_url.py
 → `eval/results/url_only_results.json`
 資料：`datasets/training_data/url_only_1to1/url_eval.jsonl`（1:1 平衡，60 筆）。
 
-### ② 文字分支（你已用 8b 跑過，**只有改動才需重跑**）
+### ② 文字分支（**正式數字請用 clean valid 重跑一次**）
+舊 `text_valid.jsonl` 有網域洩漏 / 重複 / 錯標，數字偏高。final 一律以
+`text_valid_clean.jsonl`（已修，無洩漏，valid 釣魚 10→18）為準：
 ```bat
 set EVAL_MODEL=llama3.1:8b
+set EVAL_DATA=datasets\text_valid_clean.jsonl
+set EVAL_OUTPUT=eval\results\prompt_v2_clean_results.json
 python eval\run_eval_v2.py
+set EVAL_DATA=
+set EVAL_OUTPUT=
 ```
-→ `eval/results/prompt_v2_results.json`（fusion 預設讀這支）
+→ `eval/results/prompt_v2_clean_results.json`
+（不指定 `EVAL_DATA` 則跑舊的 `text_valid.jsonl`，僅供與洩漏前對照。）
 
 ### ③ 視覺分支（新增，需要你服務一個視覺模型）
 先確認 `VISION_MODEL` / `VISION_BASE_URL` 指向可用的視覺端點，再跑：

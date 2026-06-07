@@ -23,4 +23,11 @@ runs/
 # Regenerable fusion test set (rebuild via datasets/build_fusion_testset.py)
 datasets/fusion_test/*.parquet
 
+# LaTeX build artifacts
+*.aux
+*.log
+*.toc
+*.out
+report/*.pdf
+
 # Optional: keep results if needed

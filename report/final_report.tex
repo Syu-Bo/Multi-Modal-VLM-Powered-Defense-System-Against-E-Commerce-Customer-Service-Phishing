@@ -1,0 +1,245 @@
+% 編譯方式：xelatex final_report.tex（需安裝 ctex 套件與中文字型）
+% 本檔為 Week 16 整合報告草稿骨架。標記 [待補] 之處待 8b / 視覺 / 融合 / LoRA 數字到位後填入。
+\documentclass[11pt]{ctexart}
+
+\usepackage{geometry}
+\geometry{a4paper, margin=2.5cm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{enumitem}
+
+\hypersetup{colorlinks=true, linkcolor=black, urlcolor=blue, citecolor=blue}
+
+% 待補標記
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[待補：#1]}}}
+
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  frame=single,
+  columns=fullflexible,
+  showstringspaces=false,
+}
+
+\title{\textbf{基於多模態視覺語言模型（VLM）之\\電商與假客服釣魚防禦系統}\\[0.3em]
+\large Multi-Modal VLM-Powered Defense System\\ Against E-Commerce \& Customer-Service Phishing}
+
+\author{
+第 62 組\\[0.5em]
+\begin{tabular}{ll}
+鄧芸欣 & P14922003（國立臺灣大學）\\
+張緒柏 & D11307003（國立臺灣科技大學）\\
+\end{tabular}
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+傳統釣魚偵測依賴網域黑名單或純文字語意分析，對「圖片化訊息」「藏惡意 QR Code 的截圖」
+與「像素級仿冒官方 UI 的假登入頁」存在防禦盲區。本專案提出一套開源、可在地化部署的
+\textbf{雙軌制多模態防禦管道（Dual-Track Multi-Modal Pipeline）}：以視覺語言模型（VLM）
+辨識品牌仿冒與 UI 異常，以大型語言模型（LLM）剖析文字社交工程意圖，再經融合模塊產出
+結構化威脅報告。本文涵蓋系統設計、資安評估結果，以及架構限制與改進方向。
+\end{abstract}
+
+\tableofcontents
+\bigskip
+
+%==========================================================
+\section{系統設計 (System Design)}
+%==========================================================
+
+\subsection{整體架構與資料流}
+系統採雙軌制管道，讓視覺與文字模型於獨立支線各自輸出結構化風險特徵，再由融合模塊以
+加權方式產生最終威脅指數。兩支線可並行推論、支援降級運作，且風險分數可解釋。
+
+\begin{verbatim}
+使用者輸入 URL
+      |
+  fetch_page()  抓取 HTML / 可見文字 / 圖片 / 註冊網域
+      |
+      +--> Vision Track (VLM)  --> vision_features (risk_score, ...)
+      |
+      +--> Text  Track (LLM)  --> text_features  (risk_score, ...)
+      |
+   fuse()  加權融合 (W_v, W_t) + 否決規則
+      |
+   FusedVerdict  結構化威脅報告 (危險等級 / 緩解建議)
+\end{verbatim}
+
+\subsection{模組職責與技術選型}
+\begin{table}[h]
+\centering
+\begin{tabular}{>{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}p{5cm} >{\raggedright\arraybackslash}p{5.5cm}}
+\toprule
+\textbf{模組} & \textbf{模型 / 框架} & \textbf{輸入 $\rightarrow$ 輸出} \\
+\midrule
+API Gateway & FastAPI & HTTP POST $\rightarrow$ 分流至兩支線 \\
+Vision Track & Qwen2-VL-7B-Instruct（4-bit） & base64 截圖 $\rightarrow$ 視覺風險特徵 \\
+Text Track & Llama-3-8B-Instruct（實測：Ollama \texttt{llama3.1:8b}） & HTML/文字 $\rightarrow$ 文字風險特徵 \\
+URL Track & 同文字模型，僅輸入 URL 字串 & URL $\rightarrow$ URL 風險特徵 \\
+Fusion Module & 加權函式 + 否決規則 & 兩支線分數 $\rightarrow$ 威脅報告 \\
+\bottomrule
+\end{tabular}
+\caption{模組與技術選型。設計目標為開源、可本地化部署、可 LoRA 微調。}
+\end{table}
+
+\subsection{結構化輸出 Schema}
+兩支線統一輸出可被融合模塊穩定解析的 JSON（\texttt{TextVerdict} / \texttt{VisualVerdict}）：
+\begin{lstlisting}
+{
+  "risk_score": 0.0,          // [0,1]
+  "confidence": 0.0,          // [0,1]
+  "reasons": [ ... ],         // 自然語言推理，供 error analysis
+  "suspicious_phrases": [ ... ],
+  "detected_language": null
+}
+\end{lstlisting}
+
+\subsection{融合決策邏輯}
+採「加權函式 + 否決規則」：
+\begin{equation}
+ThreatScore = W_v \cdot Score_{vision} + W_t \cdot Score_{text}, \qquad W_v + W_t = 1
+\end{equation}
+初始權重 $W_v=0.55,\ W_t=0.45$，反映「視覺通道是現代電商釣魚主要載體」之假設；
+最終權重以驗證集 Grid Search 決定。風險分數 $\ge$ 0.7（\texttt{ALERT\_THRESHOLD}）判定為釣魚。
+頁面若有多張截圖，頁面視覺分數取該頁所有圖之 \textbf{max}。
+
+\subsection{提示工程管道}
+依 ALP 文獻採三層式 Prompt：(1) System Prompt 定義角色與輸出格式；(2) Few-shot 校準本土
+話術；(3) User Prompt 注入待測內容。文字/URL 支線另設 \textbf{Domain-Brand Mismatch} 規則：
+若頁面提及之品牌與註冊網域不符，強制提高風險分數並標記 \texttt{[DOMAIN\_MISMATCH]}。
+此分層亦呼應 OWASP LLM01（Prompt Injection）之防禦建議。
+
+%==========================================================
+\section{資安評估結果 (Evaluation Results)}
+%==========================================================
+
+\subsection{評估方法論}
+二元分類（phishing / legitimate），以 \texttt{risk\_score} $\ge 0.7$ 視為系統判定釣魚，與 ground
+truth 比對得混淆矩陣。主指標：F1、Precision、Recall、FPR、P95 推論延遲、JSON Schema 合規率。
+所有比較固定 \texttt{temperature=0}、\texttt{seed=42}，並於同一模型權重上執行。
+
+\subsection{資料集}
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrl}
+\toprule
+\textbf{資料集} & \textbf{Train} & \textbf{Valid} & \textbf{備註} \\
+\midrule
+文字分支 & 158 & 39 & 釣魚:正常 約 1:2.9（不平衡）\\
+視覺分支 & 429 & 106 & 接近 1:1（弱標註，見限制）\\
+URL 分支 & 540 & 60 & 1:1 平衡 \\
+融合對齊集 & \multicolumn{2}{c}{143 頁 / 526 圖} & 文字與截圖同頁；41 釣魚 / 102 正常 \\
+\bottomrule
+\end{tabular}
+\caption{各分支資料集規模。}
+\end{table}
+
+\subsection{文字分支：Prompt 迭代（Ollama \texttt{llama3.1:8b}，39 筆 valid）}
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{版本} & \textbf{TP/FP/TN/FN} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{FPR} & \textbf{JSON} \\
+\midrule
+v1 baseline & 3/3/26/7 & 0.500 & 0.300 & 0.375 & 0.103 & 100\% \\
+v2 +Domain-Brand Mismatch & 6/5/24/4 & 0.545 & 0.600 & \textbf{0.571} & 0.172 & 100\% \\
+v3 v2+台灣 few-shot & 2/2/27/8 & 0.500 & 0.200 & 0.286 & 0.069 & 100\% \\
+\bottomrule
+\end{tabular}
+\caption{v2 的 Domain-Brand Mismatch 規則最佳；v3 加少量 few-shot 反而過擬合、Recall 下降。
+P95 延遲約 68--69 秒（CPU/Ollama），見限制。}
+\end{table}
+
+\subsection{URL 分支（base，未微調）}
+\begin{table}[h]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+\textbf{模型} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{FPR} & \textbf{P95 (ms)} \\
+\midrule
+\texttt{llama3.2:3b}（Mac smoke baseline） & 0.750 & 0.200 & 0.316 & 0.067 & 34688 \\
+\texttt{llama3.1:8b} & \todo{8b 重跑} & \todo{} & \todo{} & \todo{} & \todo{} \\
+\texttt{llama3.1:8b}+LoRA & \todo{微調後} & \todo{} & \todo{} & \todo{} & \todo{} \\
+\bottomrule
+\end{tabular}
+\caption{3b 高 Precision、極低 Recall：只抓得到尖叫式釣魚（paypal+login+cgi-bin、\texttt{.exe}），
+漏掉需推理者（可疑 TLD、裸 IP、短網址、品牌 token 不符）$\rightarrow$ 模型容量問題，
+而非資料問題；預期 8b 與 LoRA 顯著改善 Recall。}
+\end{table}
+
+\subsection{視覺分支}
+\todo{以 \texttt{run\_eval\_visual.py} 於 \texttt{visual\_valid\_studio.parquet}（106 筆）跑出 P/R/F1/FPR}
+
+\subsection{融合對照（143 頁對齊集）}
+核心問題：多模態是否優於單模態？於 143 頁對齊集上比較三者：
+\begin{table}[h]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+\textbf{分支} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{FPR} & \textbf{最佳 $W_v$} \\
+\midrule
+text-only & \todo{} & \todo{} & \todo{} & \todo{} & -- \\
+visual-only & \todo{} & \todo{} & \todo{} & \todo{} & -- \\
+fusion（best） & \todo{} & \todo{} & \todo{} & \todo{} & \todo{} \\
+\bottomrule
+\end{tabular}
+\caption{以 \texttt{run\_eval\_fusion.py} 產出，頁面視覺分數取 max。預期 fusion $\ge$ 單軌。}
+\end{table}
+
+\subsection{LoRA 微調前後（文字 / URL）}
+\todo{以同一 evaluation pipeline 量測 base vs LoRA 之 F1 提升幅度}
+
+%==========================================================
+\section{架構限制與改進方向 (Architectural Limitations)}
+%==========================================================
+
+\begin{enumerate}[leftmargin=1.4em]
+\item \textbf{模型容量限制（已實證）。} URL 分支於 \texttt{llama3.2:3b} 僅 F1 0.316、Recall 0.20；
+誤判分析顯示 3b 只能 pattern-match 教科書級釣魚，無法對可疑 TLD、裸 IP、短網址、品牌
+token 不符等訊號進行推理。$\rightarrow$ 改進：改用 8b 與針對 URL 特徵的 LoRA 微調。
+
+\item \textbf{視覺資料為弱標註（已實證）。} 圖片僅依「是否來自釣魚頁」標註，不檢視圖片本身是否
+具視覺釣魚特徵；裝飾圖、商品圖亦被標為釣魚。於 143 頁對齊集中，文字與視覺 gold 有
+\textbf{20 頁標籤不一致}。$\rightarrow$ 改進：以 Teacher VLM 重新標註、引入 Hard Sample Mining。
+
+\item \textbf{資料不平衡。} 文字 train 釣魚:正常 約 1:2.9，使模型偏向判正常、壓低 Recall。
+$\rightarrow$ 改進：對 LoRA 訓練集做平衡採樣（URL 分支已採 1:1）。
+
+\item \textbf{LoRA 之 Dataset Shortcut（已觀察）。} 微調後模型出現「URL was labeled good in
+training data」等過度引用訓練敘述、reason 與 risk\_score 不一致、欄位拼寫錯誤等現象，
+顯示資料量偏少且標註含捷徑訊號。$\rightarrow$ 改進：擴充 Hard Samples、重構 reason 欄位。
+
+\item \textbf{驗證集規模偏小。} 文字 valid 僅 39 筆（10 個正樣本），Recall 每變動一筆即跳 0.1，
+指標雜訊大、結論統計上不穩固。$\rightarrow$ 改進：擴充 valid 正樣本至 30 筆以上。
+
+\item \textbf{推論延遲過高。} 文字分支 P95 約 68--69 秒（Ollama / CPU 推論），遠超 $\le$3000ms
+之即時部署目標。$\rightarrow$ 改進：GPU 部署、4-bit 量化、批次化推論。
+
+\item \textbf{URL gold 為啟發式自動標註。} 非人工校驗，邊界樣本雜訊大。$\rightarrow$ 改進：人工抽驗校正。
+\end{enumerate}
+
+%==========================================================
+\section{結論與未來工作}
+%==========================================================
+本專案完成雙軌（含 URL 第三軌）多模態釣魚防禦之系統設計、資料集建立、Prompt 迭代與
+評估管道，並以誠實之誤判分析量化各項限制。未來工作：完成視覺分支與融合之量化評估、
+以 LoRA 補強 URL 與視覺分支、整合 QR Code（zbar）解碼模組，以及自動化 Playbook 生成
+（Whois 查詢、165 檢舉信、使用者防詐宣導）。
+
+%==========================================================
+\section*{分工 (Accountability)}
+\begin{itemize}[leftmargin=1.4em]
+\item \textbf{鄧芸欣（P14922003）}：系統架構、評估方法論、Prompt 工程、Fusion 與資料對齊設計。
+\item \textbf{張緒柏（D11307003）}：核心 pipeline 實作、資料集抓取與前處理、模型評估與 LoRA 微調。
+\end{itemize}
+
+\end{document}

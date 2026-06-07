@@ -1,0 +1,66 @@
+# 評估執行清單（給 8b / GPU 機器跑）
+
+Mac 端（3b）只做架構/腳本調通，**正式數字請在這台機器用 8b + 視覺模型跑**。
+所有腳本走 `PROJECT_ROOT` 相對路徑，不需要改 `C:\project` 硬路徑。
+
+模型透過環境變數切換（預設值見各腳本）：
+
+| 變數 | 用途 | 建議值 |
+|------|------|--------|
+| `EVAL_MODEL` | 文字 / URL 分支的 Ollama 模型 | `llama3.1:8b` |
+| `OLLAMA_URL` | Ollama generate 端點 | `http://localhost:11434/api/generate` |
+| `VISION_MODEL` | 視覺分支模型 | 你服務的 Qwen2-VL / LoRA 名稱 |
+| `VISION_BASE_URL` | OpenAI 相容 `/v1` 端點 | `http://localhost:11434/v1` 或你的 vLLM |
+| `VISION_API_KEY` | 視覺端點金鑰 | `ollama`（Ollama 隨意填）|
+
+---
+
+## 執行順序
+
+### ① URL 分支（新增，驗證「文字看不到網域」的盲區）
+```bat
+set EVAL_MODEL=llama3.1:8b
+python eval\run_eval_url.py
+```
+→ `eval/results/url_only_results.json`
+資料：`datasets/training_data/url_only_1to1/url_eval.jsonl`（1:1 平衡，60 筆）。
+
+### ② 文字分支（你已用 8b 跑過，**只有改動才需重跑**）
+```bat
+set EVAL_MODEL=llama3.1:8b
+python eval\run_eval_v2.py
+```
+→ `eval/results/prompt_v2_results.json`（fusion 預設讀這支）
+
+### ③ 視覺分支（新增，需要你服務一個視覺模型）
+先確認 `VISION_MODEL` / `VISION_BASE_URL` 指向可用的視覺端點，再跑：
+```bat
+python eval\run_eval_visual.py --dry-run --limit 3   ::先驗證解碼/payload，不呼叫模型
+set VISION_MODEL=<你的 Qwen2-VL 名稱>
+python eval\run_eval_visual.py
+```
+→ `eval/results/visual_results.json`
+資料：`datasets/visual_valid_studio.parquet`（106 筆）。
+
+### ④ 融合對照（新增，**不呼叫模型**，純讀 ②③ 結果 join）
+```bat
+python eval\run_eval_fusion.py
+```
+→ `eval/results/fusion_results.json` + 終端印出對照表：
+`text-only / visual-only / fuse(Wv 多組)`，並挑出最佳 Wv。
+text/visual 以 **Page URL** 對齊（valid∩valid 約 16 頁；要更多可改用對齊測試集）。
+
+---
+
+## 重要限制（寫進報告的 Limitations）
+
+1. **視覺標註是弱標註**：圖片只要來自釣魚頁就標 phishing，不看圖片本身是否有視覺釣魚特徵 → 視覺分支指標天生偏低，屬資料限制而非模型失敗。
+2. **valid 樣本偏少**：文字 39、視覺 106、融合對齊僅 ~16 → 指標雜訊大，結論需保守。
+3. **URL-only gold 為啟發式自動標註**（URL 特徵 + CSV 原始標籤），非人工校驗。
+4. **3b vs 8b**：Mac 端 3b 僅供 smoke test，跨機器比較一律以 8b 為準。
+
+## 想擴大 URL 訓練/驗證量
+```bat
+python datasets\build_url_only_dataset.py --ratio 1.0 --total-rows 2000 --eval-ratio 0.1 --out datasets\training_data\url_only_1to1_big
+```
+（`--ratio 1.0` = 1:1 平衡；預設 3:1 會壓低 recall，不建議。）

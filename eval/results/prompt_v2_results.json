@@ -1,0 +1,1182 @@
+{
+  "metrics": {
+    "model": "llama3.1:8b",
+    "dataset": "C:\\project\\datasets\\text_valid.jsonl",
+    "threshold": 0.7,
+    "total_samples": 39,
+    "TP": 6,
+    "FP": 5,
+    "TN": 24,
+    "FN": 4,
+    "precision": 0.5455,
+    "recall": 0.6,
+    "f1": 0.5714,
+    "fpr": 0.1724,
+    "json_schema_compliance": 1.0,
+    "p95_latency_ms": 69210.15
+  },
+  "results": [
+    {
+      "id": 0,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 26909.651279449463,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "No phishing signals detected"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"No phishing signals detected\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 1,
+      "true_risk_score": 0.5,
+      "pred_risk_score": 0.8,
+      "true_label": 0,
+      "pred_label": 1,
+      "json_valid": true,
+      "latency_ms": 21801.809549331665,
+      "gold_json": {
+        "risk_score": 0.5,
+        "confidence": 0.28,
+        "reasons": [
+          "No strong phishing phrase was visible; URL and text evidence is limited."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.8,
+        "confidence": 0.9,
+        "reasons": [
+          "[DOMAIN_MISMATCH]",
+          "urgent calls to action",
+          "credential harvesting"
+        ],
+        "suspicious_phrases": [
+          "Meta Agency Partner Program",
+          "Join Meta Agency Program"
+        ],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"reasons\": [\"[DOMAIN_MISMATCH]\", \"urgent calls to action\", \"credential harvesting\"],\n  \"suspicious_phrases\": [\"Meta Agency Partner Program\", \"Join Meta Agency Program\"],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 2,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 65347.394704818726,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "[DOMAIN_MISMATCH]"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"[DOMAIN_MISMATCH]\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": null\n}"
+    },
+    {
+      "id": 3,
+      "true_risk_score": 0.74,
+      "pred_risk_score": 0.8,
+      "true_label": 1,
+      "pred_label": 1,
+      "json_valid": true,
+      "latency_ms": 43643.09763908386,
+      "gold_json": {
+        "risk_score": 0.74,
+        "confidence": 0.44,
+        "reasons": [
+          "References brand token 'instagram' while registrable domain is 'damaca.vn', not 'instagram.com'.",
+          "Visible text contains credential, verification, reward, or urgency phrases."
+        ],
+        "suspicious_phrases": [
+          "login"
+        ],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.8,
+        "confidence": 0.9,
+        "reasons": [
+          "[DOMAIN_MISMATCH]",
+          "The page mentions 'Commerzbank' but the domain is not commerzbank.de"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "de"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"reasons\": [\n    \"[DOMAIN_MISMATCH]\",\n    \"The page mentions 'Commerzbank' but the domain is not commerzbank.de\"\n  ],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"de\"\n}"
+    },
+    {
+      "id": 4,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 48170.591592788696,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 0.0,
+        "reasons": [
+          "No phishing signals detected"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 0.0,\n  \"reasons\": [\"No phishing signals detected\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 5,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 52776.39603614807,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 0.0,
+        "reasons": [
+          "[DOMAIN_MISMATCH]"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null,
+        "impersonated_brand": "Shopee"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 0.0,\n  \"reasons\": [\n    \"[DOMAIN_MISMATCH]\"\n  ],\n  \"suspicious_phrases\": [],\n  \"detected_language\": null,\n  \"impersonated_brand\": \"Shopee\"\n}"
+    },
+    {
+      "id": 6,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 69118.91555786133,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "DOMAIN_MISMATCH"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"DOMAIN_MISMATCH\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 7,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 43332.72385597229,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "No phishing signals detected"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"No phishing signals detected\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 8,
+      "true_risk_score": 0.83,
+      "pred_risk_score": 0.0,
+      "true_label": 1,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 27268.821477890015,
+      "gold_json": {
+        "risk_score": 0.83,
+        "confidence": 0.48,
+        "reasons": [
+          "Hosted on a free or instant deployment platform (github.io).",
+          "References brand token 'netflix' while registrable domain is 'github.io', not 'netflix.com'."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 0.0,
+        "reasons": [
+          "The page appears to be a legitimate YouTube clone, with no suspicious phrases or calls to action."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 0.0,\n  \"reasons\": [\"The page appears to be a legitimate YouTube clone, with no suspicious phrases or calls to action.\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": null\n}"
+    },
+    {
+      "id": 9,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 48651.63779258728,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "No phishing signals detected"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"No phishing signals detected\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 10,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 22742.178201675415,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "[DOMAIN_MISMATCH]"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "pl"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"[DOMAIN_MISMATCH]\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"pl\"\n}"
+    },
+    {
+      "id": 11,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 20065.97852706909,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "No phishing signals detected"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"No phishing signals detected\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 12,
+      "true_risk_score": 0.79,
+      "pred_risk_score": 0.8,
+      "true_label": 1,
+      "pred_label": 1,
+      "json_valid": true,
+      "latency_ms": 23610.83197593689,
+      "gold_json": {
+        "risk_score": 0.79,
+        "confidence": 0.45,
+        "reasons": [
+          "Uses a low-reputation or commonly abused TLD (.bi).",
+          "References brand token 'roblox' while registrable domain is 'com.bi', not 'roblox.com'."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.8,
+        "confidence": 0.9,
+        "reasons": [
+          "[DOMAIN_MISMATCH]",
+          "urgent calls to action",
+          "credential harvesting"
+        ],
+        "suspicious_phrases": [
+          "Click RobloxPlayer.exe to run the Roblox installer",
+          "Click Run when prompted by your computer to begin the installation process.",
+          "Click Ok once you've successfully installed Roblox."
+        ],
+        "detected_language": null
+      },
+      "raw_output": "{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"reasons\": [\n    \"[DOMAIN_MISMATCH]\",\n    \"urgent calls to action\",\n    \"credential harvesting\"\n  ],\n  \"suspicious_phrases\": [\n    \"Click RobloxPlayer.exe to run the Roblox installer\",\n    \"Click Run when prompted by your computer to begin the installation process.\",\n    \"Click Ok once you've successfully installed Roblox.\"\n  ],\n  \"detected_language\": null\n}"
+    },
+    {
+      "id": 13,
+      "true_risk_score": 0.54,
+      "pred_risk_score": 0.95,
+      "true_label": 0,
+      "pred_label": 1,
+      "json_valid": true,
+      "latency_ms": 59453.98497581482,
+      "gold_json": {
+        "risk_score": 0.54,
+        "confidence": 0.31,
+        "reasons": [
+          "Host contains many digits, consistent with disposable domains."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.95,
+        "confidence": 0.9,
+        "reasons": [
+          "[DOMAIN_MISMATCH]",
+          "urgent calls to action",
+          "credential harvesting"
+        ],
+        "suspicious_phrases": [
+          "登录",
+          "忘记密码?",
+          "立即注册",
+          "手机APP",
+          "永久线路【365bet011.com】【365bet022.com】【365bet033.com】"
+        ],
+        "detected_language": "Chinese Simplified"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.95,\n  \"confidence\": 0.9,\n  \"reasons\": [\n    \"[DOMAIN_MISMATCH]\",\n    \"urgent calls to action\",\n    \"credential harvesting\"\n  ],\n  \"suspicious_phrases\": [\n    \"登录\",\n    \"忘记密码?\",\n    \"立即注册\",\n    \"手机APP\",\n    \"永久线路【365bet011.com】【365bet022.com】【365bet033.com】\"\n  ],\n  \"detected_language\": \"Chinese Simplified\"\n}"
+    },
+    {
+      "id": 14,
+      "true_risk_score": 0.58,
+      "pred_risk_score": 0.95,
+      "true_label": 0,
+      "pred_label": 1,
+      "json_valid": true,
+      "latency_ms": 23993.028163909912,
+      "gold_json": {
+        "risk_score": 0.58,
+        "confidence": 0.36,
+        "reasons": [
+          "Visible text contains credential, verification, reward, or urgency phrases."
+        ],
+        "suspicious_phrases": [
+          "login",
+          "password"
+        ],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.95,
+        "confidence": 0.9,
+        "reasons": [
+          "[DOMAIN_MISMATCH]",
+          "urgent calls to action",
+          "credential harvesting"
+        ],
+        "suspicious_phrases": [
+          "Login to your online banking",
+          "Register in SADAD Account by creating an ID and a password"
+        ],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.95,\n  \"confidence\": 0.9,\n  \"reasons\": [\n    \"[DOMAIN_MISMATCH]\",\n    \"urgent calls to action\",\n    \"credential harvesting\"\n  ],\n  \"suspicious_phrases\": [\n    \"Login to your online banking\",\n    \"Register in SADAD Account by creating an ID and a password\"\n  ],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 15,
+      "true_risk_score": 0.58,
+      "pred_risk_score": 0.8,
+      "true_label": 0,
+      "pred_label": 1,
+      "json_valid": true,
+      "latency_ms": 13414.504289627075,
+      "gold_json": {
+        "risk_score": 0.58,
+        "confidence": 0.36,
+        "reasons": [
+          "Visible text contains credential, verification, reward, or urgency phrases."
+        ],
+        "suspicious_phrases": [
+          "sign in",
+          "password"
+        ],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.8,
+        "confidence": 0.9,
+        "reasons": [
+          "[DOMAIN_MISMATCH]"
+        ],
+        "suspicious_phrases": [
+          "Booking.com password",
+          "Forgot your password?",
+          "Sign In"
+        ],
+        "detected_language": null
+      },
+      "raw_output": "{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"reasons\": [\"[DOMAIN_MISMATCH]\"],\n  \"suspicious_phrases\": [\n    \"Booking.com password\",\n    \"Forgot your password?\",\n    \"Sign In\"\n  ],\n  \"detected_language\": null\n}"
+    },
+    {
+      "id": 16,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 40808.72464179993,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "[DOMAIN_MISMATCH]"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"[DOMAIN_MISMATCH]\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 17,
+      "true_risk_score": 0.7,
+      "pred_risk_score": 0.0,
+      "true_label": 1,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 16789.86692428589,
+      "gold_json": {
+        "risk_score": 0.7,
+        "confidence": 0.4,
+        "reasons": [
+          "References brand token 'roblox' while registrable domain is 'com.ps', not 'roblox.com'."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 0.0,
+        "reasons": [
+          "No phishing signals detected"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 0.0,\n  \"reasons\": [\"No phishing signals detected\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 18,
+      "true_risk_score": 0.7,
+      "pred_risk_score": 0.8,
+      "true_label": 1,
+      "pred_label": 1,
+      "json_valid": true,
+      "latency_ms": 20661.916494369507,
+      "gold_json": {
+        "risk_score": 0.7,
+        "confidence": 0.4,
+        "reasons": [
+          "References brand token 'roblox' while registrable domain is 'com.ps', not 'roblox.com'."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.8,
+        "confidence": 0.9,
+        "reasons": [
+          "[DOMAIN_MISMATCH]",
+          "Urgent calls to action",
+          "Suspicious external links"
+        ],
+        "suspicious_phrases": [
+          "Click RobloxPlayer.exe to run the Roblox installer",
+          "Open URL: Roblox Protocol in the dialog box above"
+        ],
+        "detected_language": null
+      },
+      "raw_output": "{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"reasons\": [\n    \"[DOMAIN_MISMATCH]\",\n    \"Urgent calls to action\",\n    \"Suspicious external links\"\n  ],\n  \"suspicious_phrases\": [\n    \"Click RobloxPlayer.exe to run the Roblox installer\",\n    \"Open URL: Roblox Protocol in the dialog box above\"\n  ],\n  \"detected_language\": null\n}"
+    },
+    {
+      "id": 19,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 48587.071895599365,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "No phishing signals detected"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"No phishing signals detected\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 20,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 41199.96643066406,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "No phishing signals detected"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"No phishing signals detected\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 21,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 41036.290407180786,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 0.0,
+        "reasons": [
+          "No phishing signals detected"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 0.0,\n  \"reasons\": [\"No phishing signals detected\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": null\n}"
+    },
+    {
+      "id": 22,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 16933.34412574768,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "[DOMAIN_MISMATCH]"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null,
+        "impersonated_brand": "FamousWhy"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"[DOMAIN_MISMATCH]\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": null,\n  \"impersonated_brand\": \"FamousWhy\"\n}"
+    },
+    {
+      "id": 23,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 17274.190187454224,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "No phishing signals detected"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"No phishing signals detected\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 24,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 70031.21614456177,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "DOMAIN_MISMATCH"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"DOMAIN_MISMATCH\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 25,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 57483.394384384155,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "No phishing signals detected"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"No phishing signals detected\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 26,
+      "true_risk_score": 0.7,
+      "pred_risk_score": 0.0,
+      "true_label": 1,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 16008.01706314087,
+      "gold_json": {
+        "risk_score": 0.7,
+        "confidence": 0.4,
+        "reasons": [
+          "References brand token 'roblox' while registrable domain is 'com.ps', not 'roblox.com'."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 0.0,
+        "reasons": [
+          "No phishing signals detected"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 0.0,\n  \"reasons\": [\"No phishing signals detected\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 27,
+      "true_risk_score": 0.7,
+      "pred_risk_score": 0.8,
+      "true_label": 1,
+      "pred_label": 1,
+      "json_valid": true,
+      "latency_ms": 20438.26413154602,
+      "gold_json": {
+        "risk_score": 0.7,
+        "confidence": 0.4,
+        "reasons": [
+          "References brand token 'roblox' while registrable domain is 'com.ps', not 'roblox.com'."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.8,
+        "confidence": 0.9,
+        "reasons": [
+          "[DOMAIN_MISMATCH]",
+          "Urgent calls to action",
+          "Suspicious external links"
+        ],
+        "suspicious_phrases": [
+          "Click RobloxPlayer.exe to run the Roblox installer",
+          "Open URL: Roblox Protocol in the dialog box above"
+        ],
+        "detected_language": null
+      },
+      "raw_output": "{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"reasons\": [\n    \"[DOMAIN_MISMATCH]\",\n    \"Urgent calls to action\",\n    \"Suspicious external links\"\n  ],\n  \"suspicious_phrases\": [\n    \"Click RobloxPlayer.exe to run the Roblox installer\",\n    \"Open URL: Roblox Protocol in the dialog box above\"\n  ],\n  \"detected_language\": null\n}"
+    },
+    {
+      "id": 28,
+      "true_risk_score": 0.79,
+      "pred_risk_score": 0.0,
+      "true_label": 1,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 18192.77572631836,
+      "gold_json": {
+        "risk_score": 0.79,
+        "confidence": 0.45,
+        "reasons": [
+          "Uses a low-reputation or commonly abused TLD (.bi).",
+          "References brand token 'roblox' while registrable domain is 'com.bi', not 'roblox.com'."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 0.0,
+        "reasons": [
+          "The page text does not contain any suspicious phrases or phishing signals."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 0.0,\n  \"reasons\": [\"The page text does not contain any suspicious phrases or phishing signals.\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": null\n}"
+    },
+    {
+      "id": 29,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 41507.29846954346,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "[DOMAIN_MISMATCH]"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "es"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"[DOMAIN_MISMATCH]\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"es\"\n}"
+    },
+    {
+      "id": 30,
+      "true_risk_score": 0.7,
+      "pred_risk_score": 0.95,
+      "true_label": 1,
+      "pred_label": 1,
+      "json_valid": true,
+      "latency_ms": 36587.33534812927,
+      "gold_json": {
+        "risk_score": 0.7,
+        "confidence": 0.4,
+        "reasons": [
+          "References brand token 'whatsapp' while registrable domain is 'hotflirtoffer4.com', not 'whatsapp.com'."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.95,
+        "confidence": 0.9,
+        "reasons": [
+          "[DOMAIN_MISMATCH]",
+          "urgent calls to action",
+          "prize / reward bait"
+        ],
+        "suspicious_phrases": [
+          "KOSTENLOSES LEBENSLANGE KONTO",
+          "95 Frauen in der Nähe zu beschleunigen",
+          "BITTE BEACHTEN: Unser System reserviert Ihr kostenloses Kontoangebot für die nächsten 15 Minuten"
+        ],
+        "detected_language": "de"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.95,\n  \"confidence\": 0.9,\n  \"reasons\": [\n    \"[DOMAIN_MISMATCH]\",\n    \"urgent calls to action\",\n    \"prize / reward bait\"\n  ],\n  \"suspicious_phrases\": [\n    \"KOSTENLOSES LEBENSLANGE KONTO\",\n    \"95 Frauen in der Nähe zu beschleunigen\",\n    \"BITTE BEACHTEN: Unser System reserviert Ihr kostenloses Kontoangebot für die nächsten 15 Minuten\"\n  ],\n  \"detected_language\": \"de\"\n}"
+    },
+    {
+      "id": 31,
+      "true_risk_score": 0.5,
+      "pred_risk_score": 0.95,
+      "true_label": 0,
+      "pred_label": 1,
+      "json_valid": true,
+      "latency_ms": 65620.29695510864,
+      "gold_json": {
+        "risk_score": 0.5,
+        "confidence": 0.28,
+        "reasons": [
+          "No strong phishing phrase was visible; URL and text evidence is limited."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.95,
+        "confidence": 0.9,
+        "reasons": [
+          "[DOMAIN_MISMATCH]",
+          "Urgent calls to action: 立即注册",
+          "Impersonation of a known brand: 银河娱乐官网"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "Chinese"
+      },
+      "raw_output": "```\n{\n  \"risk_score\": 0.95,\n  \"confidence\": 0.9,\n  \"reasons\": [\n    \"[DOMAIN_MISMATCH]\",\n    \"Urgent calls to action: 立即注册\",\n    \"Impersonation of a known brand: 银河娱乐官网\"\n  ],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"Chinese\"\n}\n```"
+    },
+    {
+      "id": 32,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 48861.67764663696,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "No phishing signals detected"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"No phishing signals detected\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 33,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 63206.610441207886,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "No phishing signals detected"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "English"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\n    \"No phishing signals detected\"\n  ],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"English\"\n}"
+    },
+    {
+      "id": 34,
+      "true_risk_score": 0.83,
+      "pred_risk_score": 0.95,
+      "true_label": 1,
+      "pred_label": 1,
+      "json_valid": true,
+      "latency_ms": 75486.79327964783,
+      "gold_json": {
+        "risk_score": 0.83,
+        "confidence": 0.48,
+        "reasons": [
+          "Hosted on a free or instant deployment platform (blogspot.com).",
+          "References brand token 'insta' while registrable domain is 'blogspot.com', not 'instagram.com'."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.95,
+        "confidence": 0.9,
+        "reasons": [
+          "[DOMAIN_MISMATCH]",
+          "Urgent call to action: 'Pemenang resmi kami akan mendapatkan konfirmasi melalui SMS/pesan singkat yang mencantumkan situs undian resmi SHOPEE di: www.shopee2869.blogspot.com'",
+          "Suspicious external link: 'www.shopee2869.blogspot.com'",
+          "Prize/reward bait: 'HADIAH UTAMA', 'HADIAH KE DUA', 'HADIAH KE TIGA'"
+        ],
+        "suspicious_phrases": [
+          "Shopee",
+          "SHOPEE"
+        ],
+        "detected_language": "id"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.95,\n  \"confidence\": 0.9,\n  \"reasons\": [\n    \"[DOMAIN_MISMATCH]\",\n    \"Urgent call to action: 'Pemenang resmi kami akan mendapatkan konfirmasi melalui SMS/pesan singkat yang mencantumkan situs undian resmi SHOPEE di: www.shopee2869.blogspot.com'\",\n    \"Suspicious external link: 'www.shopee2869.blogspot.com'\",\n    \"Prize/reward bait: 'HADIAH UTAMA', 'HADIAH KE DUA', 'HADIAH KE TIGA'\"\n  ],\n  \"suspicious_phrases\": [\n    \"Shopee\",\n    \"SHOPEE\"\n  ],\n  \"detected_language\": \"id\"\n}"
+    },
+    {
+      "id": 35,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 21699.0487575531,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "No phishing signals detected"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"No phishing signals detected\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 36,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 41354.20536994934,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "[DOMAIN_MISMATCH]"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en"
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"[DOMAIN_MISMATCH]\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\"\n}"
+    },
+    {
+      "id": 37,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 64096.633195877075,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 0.0,
+        "reasons": [
+          "No phishing signals detected"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en",
+        "impersonated_brand": null
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 0.0,\n  \"reasons\": [\n    \"No phishing signals detected\"\n  ],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\",\n  \"impersonated_brand\": null\n}"
+    },
+    {
+      "id": 38,
+      "true_risk_score": 0.05,
+      "pred_risk_score": 0.0,
+      "true_label": 0,
+      "pred_label": 0,
+      "json_valid": true,
+      "latency_ms": 23456.915855407715,
+      "gold_json": {
+        "risk_score": 0.05,
+        "confidence": 0.75,
+        "reasons": [
+          "URL is labeled good in the source dataset and the page was reachable."
+        ],
+        "suspicious_phrases": [],
+        "detected_language": null
+      },
+      "pred_json": {
+        "risk_score": 0.0,
+        "confidence": 1.0,
+        "reasons": [
+          "[DOMAIN_MISMATCH]"
+        ],
+        "suspicious_phrases": [],
+        "detected_language": "en",
+        "impersonated_brand": null
+      },
+      "raw_output": "{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"reasons\": [\"[DOMAIN_MISMATCH]\"],\n  \"suspicious_phrases\": [],\n  \"detected_language\": \"en\",\n  \"impersonated_brand\": null\n}"
+    }
+  ]
+}

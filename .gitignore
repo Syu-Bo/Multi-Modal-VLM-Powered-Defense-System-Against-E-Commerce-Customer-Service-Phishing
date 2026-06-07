@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large model files
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.gguf
+
+# Cache / temp
+.cache/
+outputs/
+runs/
+
+# Optional: keep results if needed

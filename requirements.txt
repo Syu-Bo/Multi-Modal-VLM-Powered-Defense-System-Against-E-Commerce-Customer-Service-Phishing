@@ -1,0 +1,29 @@
+# Python 3.11
+#
+# 注意：torch 要裝 GPU(CUDA) 版，請「先」單獨安裝再跑 pip install -r requirements.txt，
+# 否則 pip 會從 PyPI 抓到 CPU 版 torch。RTX 3090 + 驅動 565 / CUDA 12.7 用 cu124 wheel：
+#
+#   pip install torch --index-url https://download.pytorch.org/whl/cu124
+#
+# 驗證：python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
+
+# --- 推論 (HF in-process, 路 B) ---
+transformers>=4.45
+accelerate>=0.34
+huggingface_hub>=0.25
+sentencepiece
+safetensors
+# bitsandbytes>=0.43   # 可選：要 4-bit 量化載入再裝 (LOAD_4BIT=1)
+
+# --- 評估 ---
+numpy
+scikit-learn
+tqdm
+
+# --- 視覺分支 / QR ---
+pyarrow
+pillow
+opencv-python
+
+# --- 若改用 server 方案 (Ollama / OpenAI 相容) 才需要 ---
+requests

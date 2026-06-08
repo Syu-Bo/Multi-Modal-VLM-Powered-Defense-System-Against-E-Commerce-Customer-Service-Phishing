@@ -138,6 +138,10 @@ def main():
 
         try:
             img = Image.open(io.BytesIO(row["image"]["bytes"])).convert("RGB")
+            # Qwen2-VL 要求長寬 >= 28 (patch factor)；追蹤像素等過小圖先放大。
+            w, h = img.size
+            if w < 28 or h < 28:
+                img = img.resize((max(w, 28), max(h, 28)))
         except Exception as e:
             details.append({"id": idx, "page_url": url, "error": f"decode: {e}"})
             y_true.append(true_label); y_pred.append(0); latencies.append(0.0)

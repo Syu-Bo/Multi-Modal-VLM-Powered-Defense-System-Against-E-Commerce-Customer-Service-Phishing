@@ -24,6 +24,12 @@
 \renewcommand{\tablename}{表}
 \renewcommand{\figurename}{圖}
 
+% 章節標題靠左（ctexart 預設置中）
+\ctexset{
+  section/format += \raggedright,
+  subsection/format += \raggedright,
+}
+
 \lstset{
   basicstyle=\ttfamily\footnotesize,
   breaklines=true,
@@ -43,6 +49,18 @@
 \end{tabular}
 }
 \date{}
+
+% 標題區塊靠左對齊（預設 \maketitle 置中）
+\makeatletter
+\renewcommand{\maketitle}{%
+  {\raggedright
+   {\LARGE \@title \par}%
+   \vskip 1.2em
+   {\large \@author \par}%
+   \par}%
+  \vskip 2em
+}
+\makeatother
 
 \begin{document}
 \pagestyle{plain}   % 只在頁尾置中顯示頁碼，不要 running header

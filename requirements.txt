@@ -8,7 +8,9 @@
 # 驗證：python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
 
 # --- 推論 (HF in-process, 路 B) ---
-transformers>=4.45
+# 上限 <4.49：較新版引用 torch.float8_e8m0fnu，需 torch>=2.7(cu126+)；
+# 搭配 cu124 的 torch 2.6 會 AttributeError。降 transformers 比升 torch 省事。
+transformers>=4.45,<4.49
 accelerate>=0.34
 huggingface_hub>=0.25
 sentencepiece

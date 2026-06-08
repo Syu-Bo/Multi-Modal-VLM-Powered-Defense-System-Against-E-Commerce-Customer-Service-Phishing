@@ -14,6 +14,7 @@ Env:
   EVAL_DATA   chat jsonl        (default: datasets/text_valid_clean.jsonl)
   EVAL_OUTPUT output json       (default: eval/results/hf_<model>_results.json)
   LOAD_4BIT   "1" -> 4-bit via bitsandbytes (else bf16/fp16; fp16 ~16GB fits a 3090)
+  PROMPT_V2   "1" -> append the Domain-Brand Mismatch rule to the system prompt (= v2)
 
 Examples:
   EVAL_DATA=datasets/text_valid_clean.jsonl python eval/run_eval_hf.py --limit 5
@@ -37,8 +38,25 @@ DATA_PATH = Path(os.environ.get("EVAL_DATA", PROJECT_ROOT / "datasets" / "text_v
 OUTPUT_DIR = PROJECT_ROOT / "eval" / "results"
 HF_MODEL = os.environ.get("HF_MODEL", "meta-llama/Llama-3.1-8B-Instruct")
 LOAD_4BIT = os.environ.get("LOAD_4BIT") == "1"
+PROMPT_V2 = os.environ.get("PROMPT_V2") == "1"
 
 URL_RE = re.compile(r"Page URL:\s*(\S+)")
+
+# v2 規則：與 Ollama run_eval_v2.py 一致的 Domain-Brand Mismatch 附加規則。
+V2_RULE = """
+
+Additional detection rule:
+If the visible text mentions a known brand, but the domain or URL does not match the official domain, treat it as a strong phishing signal.
+
+Domain-brand mismatch examples:
+1. Text contains "Shopee" or "蝦皮", but the domain is not shopee.tw or shopee.com.
+2. Text contains "momo", but the domain is not momoshop.com.tw.
+3. Text contains "LINE Pay", but the domain is not line.me.
+4. Text contains bank, delivery, payment, or shopping platform names, but the URL is unrelated or suspicious.
+
+When domain-brand mismatch is found:
+- Set risk_score to at least 0.80.
+- Add "[DOMAIN_MISMATCH]" in reasons."""
 
 
 def page_url_from(text):
@@ -140,7 +158,10 @@ def main():
         true_label = risk_to_label(gold.get("risk_score", 0.0))
         url = page_url_from(msgs[1]["content"])
 
-        inputs = build_inputs(tok, msgs[0], msgs[1], model.device)
+        system_msg = msgs[0]
+        if PROMPT_V2:
+            system_msg = {"role": "system", "content": msgs[0]["content"] + V2_RULE}
+        inputs = build_inputs(tok, system_msg, msgs[1], model.device)
         start = time.time()
         with torch.no_grad():
             gen = model.generate(inputs, max_new_tokens=args.max_new_tokens,
@@ -168,7 +189,7 @@ def main():
 
     tn, fp, fn, tp = confusion_matrix(y_true, y_pred, labels=[0, 1]).ravel()
     metrics = {
-        "model": HF_MODEL, "load_4bit": LOAD_4BIT,
+        "model": HF_MODEL, "load_4bit": LOAD_4BIT, "prompt_v2": PROMPT_V2,
         "dataset": str(DATA_PATH), "threshold": ALERT_THRESHOLD,
         "total_samples": len(samples),
         "TP": int(tp), "FP": int(fp), "TN": int(tn), "FN": int(fn),

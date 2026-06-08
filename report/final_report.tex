@@ -214,19 +214,27 @@ Qwen2-VL-7B (4-bit) & \textbf{1.000} & 0.035 & 0.068 & 0.000 & 84.9\% \\
 \end{table}
 
 \subsection{融合對照（143 頁對齊集）}
-核心問題：多模態是否優於單模態？於 143 頁對齊集上比較三者：
+核心問題：多模態是否優於單模態？於 143 頁「文字+截圖同頁」對齊集上比較。頁面視覺分數取該頁
+所有圖之 max。
 \begin{table}[h]
 \centering
-\begin{tabular}{lccccc}
+\begin{tabular}{lccccl}
 \toprule
-\textbf{分支} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{FPR} & \textbf{最佳 $W_v$} \\
+\textbf{分支 / 融合} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{FPR} & \textbf{最佳權重} \\
 \midrule
-text-only & \todo{} & \todo{} & \todo{} & \todo{} & -- \\
-visual-only & \todo{} & \todo{} & \todo{} & \todo{} & -- \\
-fusion（best） & \todo{} & \todo{} & \todo{} & \todo{} & \todo{} \\
+text-only & 0.636 & 0.167 & 0.264 & 0.040 & -- \\
+visual-only & 0.417 & 0.119 & 0.185 & 0.069 & -- \\
+url-only & 0.561 & \textbf{0.881} & 0.685 & 0.287 & -- \\
+\midrule
+A：fuse(text+visual) & 0.778 & 0.167 & 0.275 & 0.020 & $W_v$=0.3 \\
+B：fuse(url+text+visual) & 0.569 & \textbf{0.881} & \textbf{0.692} & 0.277 & $W_u$=0.9,$W_t$=0,$W_v$=0.1 \\
 \bottomrule
 \end{tabular}
-\caption{以 \texttt{run\_eval\_fusion.py} 產出，頁面視覺分數取 max。預期 fusion $\ge$ 單軌。}
+\caption{(A) 原架構的 text+visual 融合僅 F1 0.275——略勝兩者單軌，但因\textbf{判別訊號不在文字/視覺}
+而整體偏弱。(B) 納入 URL 軌後 F1 升至 \textbf{0.692}，且\textbf{融合 $\ge$ 最佳單軌}（url-only 0.685）；
+最佳權重 $W_u$=0.9 顯示 URL 主導、視覺貢獻 +0.007、文字權重 0。結論：\textbf{多模態融合確能 $\ge$
+最佳單軌，但前提是包含承載訊號的模態（此分布為 URL 軌）}；text/visual 對 URL-feed 型釣魚貢獻有限，
+其價值在品牌仿冒/QR 型案例（由 QR 模組與視覺 Precision 0.93 佐證）。}
 \end{table}
 
 \subsection{LoRA 微調前後（文字 / URL）}

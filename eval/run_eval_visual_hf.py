@@ -14,7 +14,8 @@ Env:
   VISION_HF_MODEL  model id/path (default: Qwen/Qwen2-VL-7B-Instruct; open, ~16GB fp16)
   EVAL_DATA        parquet path  (default: datasets/visual_valid_studio.parquet)
   EVAL_OUTPUT      output json   (default: eval/results/visual_hf_results.json)
-  LOAD_4BIT        "1" -> 4-bit via bitsandbytes
+  LOAD_4BIT        "1" -> 4-bit via bitsandbytes (大幅省 VRAM，OOM 時建議開)
+  VISION_MAX_PIXELS  每張圖最大像素 (default 512*28*28; OOM 再調小)
 
 Examples:
   EVAL_DATA=datasets/visual_valid_studio.parquet python eval/run_eval_visual_hf.py --limit 3
@@ -40,6 +41,10 @@ DATA_PATH = Path(os.environ.get("EVAL_DATA", PROJECT_ROOT / "datasets" / "visual
 OUTPUT_DIR = PROJECT_ROOT / "eval" / "results"
 VISION_HF_MODEL = os.environ.get("VISION_HF_MODEL", "Qwen/Qwen2-VL-7B-Instruct")
 LOAD_4BIT = os.environ.get("LOAD_4BIT") == "1"
+# 限制每張圖的最大像素 -> 限制 vision token 數 -> 控制激活記憶體 (避免 OOM)。
+# 預設 512*28*28；OOM 再調小，清晰大圖可調大。
+VISION_MAX_PIXELS = int(os.environ.get("VISION_MAX_PIXELS", 512 * 28 * 28))
+VISION_MIN_PIXELS = int(os.environ.get("VISION_MIN_PIXELS", 64 * 28 * 28))
 
 URL_RE = re.compile(r"Page URL:\s*(\S+)")
 
@@ -85,7 +90,8 @@ def build_model():
     import torch
     from transformers import AutoProcessor, Qwen2VLForConditionalGeneration
 
-    proc = AutoProcessor.from_pretrained(VISION_HF_MODEL)
+    proc = AutoProcessor.from_pretrained(
+        VISION_HF_MODEL, min_pixels=VISION_MIN_PIXELS, max_pixels=VISION_MAX_PIXELS)
     kwargs = {"device_map": "auto"}
     if LOAD_4BIT:
         from transformers import BitsAndBytesConfig

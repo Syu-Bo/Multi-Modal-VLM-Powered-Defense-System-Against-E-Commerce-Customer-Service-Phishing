@@ -26,6 +26,9 @@ tqdm
 pyarrow
 pillow
 opencv-python
+# 視覺 in-process (Qwen2-VL via run_eval_visual_hf.py) 另需：
+#   pip install torchvision --index-url https://download.pytorch.org/whl/cu124
+# torchvision   # 與 torch 同 CUDA index 安裝
 
 # --- 若改用 server 方案 (Ollama / OpenAI 相容) 才需要 ---
 requests

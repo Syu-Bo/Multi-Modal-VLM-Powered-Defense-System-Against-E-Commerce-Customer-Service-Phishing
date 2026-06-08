@@ -196,7 +196,22 @@ v1 baseline 與 v2（加 Domain-Brand Mismatch 規則）的 Precision/Recall/F1 
 \end{table}
 
 \subsection{視覺分支}
-\todo{以 \texttt{run\_eval\_visual.py} 於 \texttt{visual\_valid\_studio.parquet}（106 筆）跑出 P/R/F1/FPR}
+以 \texttt{Qwen2-VL-7B-Instruct}（4-bit, HF in-process）於 \texttt{visual\_valid\_studio.parquet}
+（106 張）評估：
+\begin{table}[h]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+\textbf{模型} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{FPR} & \textbf{JSON} \\
+\midrule
+Qwen2-VL-7B (4-bit) & \textbf{1.000} & 0.035 & 0.068 & 0.000 & 84.9\% \\
+\bottomrule
+\end{tabular}
+\caption{TP=2/FP=0/FN=55。Precision 1.0 但 Recall 極低 —— \textbf{非模型失誤，而是弱標註所致}：
+57 張「釣魚」圖中多數為 logo、商品圖或追蹤像素（僅因「來自釣魚頁」被標釣魚），本身無視覺釣魚特徵，
+模型正確地評為低風險。只有真正含偽冒 UI 的少數圖被 flag（且全對）。此結果量化了弱標註對視覺分支
+評估的限制（見限制章）。}
+\end{table}
 
 \subsection{融合對照（143 頁對齊集）}
 核心問題：多模態是否優於單模態？於 143 頁對齊集上比較三者：

@@ -31,21 +31,27 @@ detected_language`。`risk_score ≥ 0.7` 判定為釣魚。
 ## Repo 結構
 
 ```
+run_report_data.sh               # 一鍵產生填報告所需數據（HF in-process）
+requirements.txt                 # Python 3.11 依賴（torch GPU 另從 cu124 index 裝）
 datasets/
   build_url_only_dataset.py      # 產生 1:1 URL-only 資料集
-  build_fusion_testset.py        # 建 143 頁「文字+截圖同頁」對齊融合測試集
+  build_fusion_testset.py        # 建 143 頁「文字+截圖同頁」對齊集（text/url/visual）
+  clean_resplit_text.py          # 文字資料去重 / 修錯標 / 網域分組重切（修洩漏）
   prepare_unsloth_studio_parquet.py
-  text_train.jsonl / text_valid.jsonl     # 文字分支 (158 / 39)
+  text_train.jsonl / text_valid.jsonl           # 文字分支原始 (158 / 39)
+  text_train_clean.jsonl / text_valid_clean.jsonl  # 清洗+重切後 (148 / 42)
   visual_train_studio.parquet / visual_valid_studio.parquet  # 視覺分支 (429 / 106)
   training_data/url_only_1to1/   # URL 分支 (train 540 / eval 60)
   fusion_test/                   # 對齊集（parquet 不進 git，用 builder 重生）
 eval/
-  run_eval.py / _v1 / _v2 / _v3  # 文字分支（prompt 迭代）
-  run_eval_url.py                # URL 分支
+  run_eval.py / _v1 / _v2 / _v3  # 文字分支（prompt 迭代，Ollama）
+  run_eval_url.py                # URL 分支（Ollama）
+  run_eval_hf.py                 # 文字/URL 分支（HF in-process，無伺服器；支援 PROMPT_V2）
   run_eval_visual.py             # 視覺分支（OpenAI-compatible vision endpoint）
-  run_eval_fusion.py             # 融合：text vs visual vs fused + Wv grid search
-  compare_results.py
+  run_eval_visual_hf.py          # 視覺分支（HF in-process，Qwen2-VL）
+  run_eval_fusion.py             # 融合：2-way(text+visual) + 3-way(url+text+visual)
   RUN_SHEET.md                   # 給 8b/GPU 機器的完整執行清單
+  REPORT_DATA_CHECKLIST.md       # 報告缺口 → 腳本 → 輸出檔 對照表
   results/                       # 評估結果 JSON
 lora/
   train_lora_unsloth.py          # LoRA / QLoRA 訓練（實際以 Unsloth Studio 進行）
@@ -69,7 +75,13 @@ report/
 
 ## 快速開始
 
-模型透過環境變數切換：`EVAL_MODEL`、`OLLAMA_URL`、`VISION_MODEL`、`VISION_BASE_URL`。
+**一鍵（GPU 機器，HF in-process，不需伺服器）**：產生填報告所需的全部數據
+```bash
+pip install -r requirements.txt   # torch GPU 版另從 cu124 index 裝，見檔內說明
+bash run_report_data.sh           # 文字/URL/視覺/融合一次跑完
+```
+
+**分步（Ollama 路線）**：模型透過環境變數切換 `EVAL_MODEL`、`OLLAMA_URL`、`VISION_MODEL`、`VISION_BASE_URL`。
 
 ```bash
 # 1) URL 分支
@@ -94,20 +106,20 @@ cd report && make
 
 ## 目前進度
 
-| 分支 | 狀態 |
+| 分支 / 模組 | 狀態（8b 正式數字）|
 |------|------|
-| 文字（prompt v1/v2/v3, 8b） | ✅ 已評估（v2 最佳 F1 0.571）|
-| URL | 🟡 3b baseline 已跑（F1 0.316）；待 8b + LoRA |
-| 視覺 | 🟡 資料就緒；待跑 P/R/F1 |
-| 融合 | 🟡 143 頁對齊集就緒；待 text+visual 結果 |
-| LoRA | 🟡 文字已試訓（Unsloth）；待補 Hard Sample、修 dataset shortcut |
+| 文字（clean valid, 8b） | ✅ F1 0（標註與任務錯配：訊號不在可見文字）|
+| URL（8b） | ✅ F1 0.84（3b 0.32 → 8b 0.84，證實模型容量瓶頸）|
+| 視覺（Qwen2-VL 4-bit） | ✅ P 0.93 / R 0.035（受弱標註限制）|
+| 融合（143 頁對齊集） | ✅ 2-way 0.275；3-way（URL+文字+視覺）0.692 ≥ 最佳單軌 |
+| LoRA | 🟡 文字已試訓（觀察到 dataset shortcut）；URL-LoRA 列未來工作 |
 | QR 解碼 | ✅ 完成（OpenCV，網域不符偵測，補案例一）|
 | Playbook | ✅ 完成（Whois / 165 檢舉信 / 使用者宣導）|
 
 已知限制（詳見報告 Limitations）：模型容量（3b 太弱）、視覺弱標註、文字資料不平衡、
-LoRA dataset shortcut、valid 規模小、推論延遲高。
+標註與任務錯配、LoRA dataset shortcut、valid 規模小、推論延遲高。
 
 ## 分工
 
-- **鄧芸欣 (P14922003)**：系統架構、評估方法論、Prompt 工程、Fusion 與資料對齊設計
+- **鄧芸欣 (P14922003)**：系統架構與評估方法論設計、Prompt 工程、資料品質工程（洩漏修正與 clean 重切）、融合實驗設計（2-way/3-way）、QR 與 Playbook 設計
 - **張緒柏 (D11307003)**：核心 pipeline 實作、資料集抓取與前處理、模型評估與 LoRA 微調

@@ -5,9 +5,9 @@ Multi-Modal VLM-Powered Defense System Against E-Commerce & Customer-Service Phi
 > NTU 1142《Applying Large Language Models in Cybersecurity Systems》Term Project ｜ 第 62 組
 > 鄧芸欣 (P14922003, 臺大) ／ 張緒柏 (D11307003, 臺科大)
 
-傳統釣魚偵測依賴網域黑名單或純文字語意分析，對「圖片化訊息」「藏惡意 QR Code 的截圖」與
-「像素級仿冒官方 UI 的假登入頁」存在盲區。本專案提出開源、可在地化部署的**雙軌制多模態防禦
-管道**：以 VLM 辨識品牌仿冒與 UI 異常、以 LLM 剖析文字社交工程意圖，再由融合模組產出結構化
+傳統釣魚偵測依賴網域黑名單或純文字語意分析，對圖片化訊息、藏惡意 QR Code 的截圖、與
+像素級仿冒官方 UI 的假登入頁存在盲區。本專案提出開源、可在地化部署的雙軌制多模態防禦
+管道：以 VLM 辨識品牌仿冒與 UI 異常、以 LLM 剖析文字社交工程意圖，再由融合模組產出結構化
 威脅報告。
 
 ## 架構
@@ -35,7 +35,7 @@ run_report_data.sh               # 一鍵產生填報告所需數據（HF in-pro
 requirements.txt                 # Python 3.11 依賴（torch GPU 另從 cu124 index 裝）
 datasets/
   build_url_only_dataset.py      # 產生 1:1 URL-only 資料集
-  build_fusion_testset.py        # 建 143 頁「文字+截圖同頁」對齊集（text/url/visual）
+  build_fusion_testset.py        # 建 143 頁文字與截圖同頁對齊集（text/url/visual）
   clean_resplit_text.py          # 文字資料去重 / 修錯標 / 網域分組重切（修洩漏）
   prepare_unsloth_studio_parquet.py
   text_train.jsonl / text_valid.jsonl           # 文字分支原始 (158 / 39)
@@ -102,7 +102,7 @@ python datasets/build_fusion_testset.py
 cd report && make
 ```
 
-完整逐步指令（含 Windows 寫法）見 **[eval/RUN_SHEET.md](eval/RUN_SHEET.md)**。
+完整逐步指令（含 Windows 寫法）見 [eval/RUN_SHEET.md](eval/RUN_SHEET.md)。
 
 ## 目前進度
 

@@ -152,8 +152,7 @@ URL 分支 & 540 & 60 & 1:1 平衡 \\
 \end{table}
 
 \subsection{文字分支：Prompt 迭代（Ollama \texttt{llama3.1:8b}）}
-\textit{下表為修正資料洩漏前、於原始 39 筆 valid 之結果；final 數字將於 clean valid（42 筆）重跑。}
-\todo{於 \texttt{text\_valid\_clean.jsonl} 重跑 v1/v2/v3，更新本表}
+\textit{下表為「prompt 消融」對照，於修正資料洩漏前之原始 39 筆 valid、以 Ollama 跑：}
 \begin{table}[h]
 \centering
 \begin{tabular}{lcccccc}
@@ -169,6 +168,13 @@ v3 v2+台灣 few-shot & 2/2/27/8 & 0.500 & 0.200 & 0.286 & 0.069 & 100\% \\
 P95 延遲約 68--69 秒（CPU/Ollama），見限制。}
 \end{table}
 
+於修正後的 clean valid（42 筆、無洩漏）以 \texttt{Llama-3.1-8B-Instruct}（HF in-process）重評 v1
+baseline：Precision/Recall/F1 = 0/0/\textbf{0}（TP=0、FN=18，FPR 0.125，JSON 合規 97.6\%）。
+18 個釣魚頁 gold 皆 0.79--0.91，但模型僅憑\textbf{可見文字}全數評為低風險——這些 clean 釣魚頁多為
+被入侵的正常站、博弈或 free-host，文字本身難以辨識。\textbf{對照同一 8B 模型於 URL 分支達 F1 0.84}，
+可見判別訊號主要存在於 \textbf{URL/網域結構}而非頁面可見文字，正佐證多軌設計之必要。
+\todo{於 clean valid 補跑 v2（Domain-Brand Mismatch）以呈現規則注入後的回升}
+
 \subsection{URL 分支（base，未微調）}
 \begin{table}[h]
 \centering
@@ -176,14 +182,15 @@ P95 延遲約 68--69 秒（CPU/Ollama），見限制。}
 \toprule
 \textbf{模型} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{FPR} & \textbf{P95 (ms)} \\
 \midrule
-\texttt{llama3.2:3b}（Mac smoke baseline） & 0.750 & 0.200 & 0.316 & 0.067 & 34688 \\
-\texttt{llama3.1:8b} & \todo{8b 重跑} & \todo{} & \todo{} & \todo{} & \todo{} \\
-\texttt{llama3.1:8b}+LoRA & \todo{微調後} & \todo{} & \todo{} & \todo{} & \todo{} \\
+\texttt{llama3.2:3b}（baseline） & 0.750 & 0.200 & 0.316 & 0.067 & 34688 \\
+\texttt{Llama-3.1-8B-Instruct} & 0.813 & \textbf{0.867} & \textbf{0.839} & 0.200 & 4368 \\
+\texttt{Llama-3.1-8B-Instruct}+LoRA & \todo{微調後} & \todo{} & \todo{} & \todo{} & \todo{} \\
 \bottomrule
 \end{tabular}
 \caption{3b 高 Precision、極低 Recall：只抓得到尖叫式釣魚（paypal+login+cgi-bin、\texttt{.exe}），
-漏掉需推理者（可疑 TLD、裸 IP、短網址、品牌 token 不符）$\rightarrow$ 模型容量問題，
-而非資料問題；預期 8b 與 LoRA 顯著改善 Recall。}
+漏掉需推理者（可疑 TLD、裸 IP、短網址、品牌 token 不符）。換 8B 後 Recall 由 0.20 躍升至
+\textbf{0.87}、F1 0.32$\rightarrow$\textbf{0.84}，證實低分為\textbf{模型容量}瓶頸而非資料問題。
+（8B 為 HF \texttt{meta-llama/Llama-3.1-8B-Instruct} fp16 in-process 推論。）}
 \end{table}
 
 \subsection{視覺分支}

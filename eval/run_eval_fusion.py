@@ -1,4 +1,4 @@
-"""Fusion evaluation — does multimodal beat single-modality?
+"""Fusion evaluation - does multimodal beat single-modality?
 
 Joins an already-computed TEXT branch result and VISUAL branch result on the same
 Page URL, then reports text-only / visual-only / fused metrics on the matched

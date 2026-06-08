@@ -1,10 +1,10 @@
-"""Playbook generator — turn a high-risk phishing verdict into an actionable response.
+"""Playbook generator - turn a high-risk phishing verdict into an actionable response.
 
 Given a detected phishing page (URL + optional brand/risk/reasons), produce a Markdown
 playbook with three parts:
-  1. 網域調查指令 (Whois / DNS)  — deterministic templates, no model needed
-  2. 165 檢舉信草稿            — LLM few-shot (Traditional Chinese)
-  3. 使用者防詐宣導訊息         — LLM few-shot (Traditional Chinese)
+  1. 網域調查指令 (Whois / DNS)  - deterministic templates, no model needed
+  2. 165 檢舉信草稿            - LLM few-shot (Traditional Chinese)
+  3. 使用者防詐宣導訊息         - LLM few-shot (Traditional Chinese)
 
 The LLM parts use an Ollama endpoint and degrade gracefully: with --no-llm (or if the
 endpoint is unreachable) they fall back to static templates.

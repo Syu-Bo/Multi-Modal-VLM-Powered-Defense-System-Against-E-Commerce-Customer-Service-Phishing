@@ -2,7 +2,7 @@
 
 Loads meta-llama/Llama-3.1-8B-Instruct via transformers and evaluates a chat JSONL whose
 messages are [system, user, assistant] (assistant content = gold TextVerdict JSON). Works
-for BOTH the text branch and the URL branch — point EVAL_DATA at the right file. Stores
+for BOTH the text branch and the URL branch - point EVAL_DATA at the right file. Stores
 per-sample Page URL so run_eval_fusion.py can join.
 
 Use the Instruct model (default) to compare with the teammate's Ollama `llama3.1:8b`

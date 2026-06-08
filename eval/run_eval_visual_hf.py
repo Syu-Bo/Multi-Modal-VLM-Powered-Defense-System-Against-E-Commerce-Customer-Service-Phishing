@@ -7,7 +7,7 @@ Loads Qwen/Qwen2-VL-7B-Instruct via transformers and evaluates the visual parque
 Same output format as run_eval_visual.py so run_eval_fusion.py can consume it.
 
 NOTE on labels: the parquet labels are WEAK page-level labels (an image is "phishing"
-iff scraped from a phishing page, regardless of visual cue) — metrics are limited by
+iff scraped from a phishing page, regardless of visual cue) - metrics are limited by
 this, by design. The main value is enabling the fusion comparison.
 
 Env:

@@ -1,4 +1,4 @@
-"""QR-code phishing analysis — close the proposal's #1 blind spot.
+"""QR-code phishing analysis - close the proposal's #1 blind spot.
 
 A pure-text LLM cannot read a URL hidden inside an image's QR code (proposal case 1:
 the Shopee fake-customer-service + QR-code scam). This module decodes QR codes from a
@@ -103,7 +103,7 @@ def analyze_qr(img_path, page_domain):
             mismatch = True
             reasons.append(
                 f"QR code points to '{dom}', which differs from the page domain "
-                f"'{page_domain}' — classic in-image redirect."
+                f"'{page_domain}' - classic in-image redirect."
             )
 
     if not payloads:

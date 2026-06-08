@@ -102,12 +102,12 @@ def main():
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    # text_fusion.jsonl — one text row per shared page
+    # text_fusion.jsonl - one text row per shared page
     with (OUT_DIR / "text_fusion.jsonl").open("w", encoding="utf-8") as f:
         for url in shared:
             f.write(json.dumps(text[url][0], ensure_ascii=False) + "\n")
 
-    # url_fusion.jsonl — same pages, URL-only task (for the 3-way fusion's URL track).
+    # url_fusion.jsonl - same pages, URL-only task (for the 3-way fusion's URL track).
     # Keeps "Page URL:" so run_eval_hf.py captures page_url for the fusion join.
     with (OUT_DIR / "url_fusion.jsonl").open("w", encoding="utf-8") as f:
         for url in shared:
@@ -120,12 +120,12 @@ def main():
             ]}
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
 
-    # visual_fusion.parquet — all screenshots for shared pages
+    # visual_fusion.parquet - all screenshots for shared pages
     visual_rows = [r for url in shared for r in visual[url]]
     pq.write_table(pa.Table.from_pylist(visual_rows, schema=schema),
                    OUT_DIR / "visual_fusion.parquet")
 
-    # pages.csv — label per page (text gold is canonical page-level truth)
+    # pages.csv - label per page (text gold is canonical page-level truth)
     n_phish = 0
     with (OUT_DIR / "pages.csv").open("w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)

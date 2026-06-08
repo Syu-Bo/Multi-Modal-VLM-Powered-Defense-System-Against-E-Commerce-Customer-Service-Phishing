@@ -23,6 +23,7 @@
 \renewcommand{\abstractname}{摘要}
 \renewcommand{\tablename}{表}
 \renewcommand{\figurename}{圖}
+\renewcommand{\refname}{參考文獻}
 
 % 章節標題靠左（ctexart 預設置中）
 \ctexset{
@@ -82,7 +83,10 @@
 %==========================================================
 
 \subsection{整體架構與資料流}
-系統採雙軌制管道，讓視覺與文字模型於獨立支線各自輸出結構化風險特徵，再由融合模組以
+近年研究證實 LLM 與多模態 LLM 可有效偵測釣魚網頁~\cite{koide2023,lee2025,lee2024mllm}，
+惟多聚焦英文、少見圖像型攻擊之整合評估；而台灣電商假客服與 QR Code 詐騙頻傳
+（如假冒蝦皮之 QR Code 釣魚~\cite{shopee2025}，2025 年全台詐騙財損逾 893 億元~\cite{npa2025}）。
+本系統採雙軌制管道，讓視覺與文字模型於獨立支線各自輸出結構化風險特徵，再由融合模組以
 加權方式產生最終威脅指數。兩支線可並行推論、支援降級運作，且風險分數可解釋。
 
 \begin{verbatim}
@@ -145,10 +149,10 @@ ThreatScore = W_v \cdot Score_{vision} + W_t \cdot Score_{text}, \qquad W_v + W_
 依據。實測：仿冒 QR 評為 0.90、相符 QR 評為 0.30。
 
 \subsection{提示工程管道}
-依 ALP 文獻採三層式 Prompt：(1) System Prompt 定義角色與輸出格式；(2) Few-shot 校準本土
+依 ALP~\cite{alp2025} 採三層式 Prompt：(1) System Prompt 定義角色與輸出格式；(2) Few-shot 校準本土
 話術；(3) User Prompt 注入待測內容。文字/URL 支線另設 Domain-Brand Mismatch 規則：
 若頁面提及之品牌與註冊網域不符，強制提高風險分數並標記 \texttt{[DOMAIN\_MISMATCH]}。
-此分層亦呼應 OWASP LLM01（Prompt Injection）之防禦建議。
+此分層亦呼應 OWASP LLM01（Prompt Injection）之防禦建議~\cite{owasp2025}。
 
 %==========================================================
 \section{資安評估結果 (Evaluation Results)}
@@ -336,5 +340,16 @@ Prompt Injection（OWASP LLM01）紅隊測試。
 \item \textbf{鄧芸欣（P14922003）}：系統架構與評估方法論設計、Prompt 工程、資料品質工程（洩漏修正與 clean 重切）、融合實驗設計（2-way/3-way）、QR 與 Playbook 設計。
 \item \textbf{張緒柏（D11307003）}：核心 pipeline 實作、資料集抓取與前處理、模型評估與 LoRA 微調。
 \end{itemize}
+
+%==========================================================
+\begin{thebibliography}{9}
+\bibitem{npa2025} 內政部警政署，《165 打詐儀錶板》，2025。\url{https://165dashboard.tw/}
+\bibitem{shopee2025} 蝦皮幫助中心，〈[購物安全] QR Code 詐騙防範〉，2025 更新。\url{https://help.shopee.tw/portal/4/article/80198}
+\bibitem{koide2023} T. Koide et al., ``Detecting Phishing Sites Using ChatGPT,'' arXiv:2306.05816, 2023.
+\bibitem{lee2025} J. Lee et al., ``How Can We Effectively Use LLMs for Phishing Detection?,'' arXiv:2511.09606, 2025.
+\bibitem{alp2025} ``Adaptive Linguistic Prompting (ALP) Enhances Phishing Webpage Detection in MLLMs,'' arXiv:2507.13357, 2025.
+\bibitem{lee2024mllm} J. Lee et al., ``Multimodal Large Language Models for Phishing Webpage Detection and Identification,'' arXiv:2408.05941, 2024.
+\bibitem{owasp2025} OWASP Foundation, ``OWASP Top 10 for LLM Applications 2025,'' 2025. \url{https://genai.owasp.org/llm-top-10/}
+\end{thebibliography}
 
 \end{document}

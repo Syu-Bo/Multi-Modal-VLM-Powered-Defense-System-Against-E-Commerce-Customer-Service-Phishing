@@ -168,12 +168,14 @@ v3 v2+台灣 few-shot & 2/2/27/8 & 0.500 & 0.200 & 0.286 & 0.069 & 100\% \\
 P95 延遲約 68--69 秒（CPU/Ollama），見限制。}
 \end{table}
 
-於修正後的 clean valid（42 筆、無洩漏）以 \texttt{Llama-3.1-8B-Instruct}（HF in-process）重評 v1
-baseline：Precision/Recall/F1 = 0/0/\textbf{0}（TP=0、FN=18，FPR 0.125，JSON 合規 97.6\%）。
-18 個釣魚頁 gold 皆 0.79--0.91，但模型僅憑\textbf{可見文字}全數評為低風險——這些 clean 釣魚頁多為
-被入侵的正常站、博弈或 free-host，文字本身難以辨識。\textbf{對照同一 8B 模型於 URL 分支達 F1 0.84}，
-可見判別訊號主要存在於 \textbf{URL/網域結構}而非頁面可見文字，正佐證多軌設計之必要。
-\todo{於 clean valid 補跑 v2（Domain-Brand Mismatch）以呈現規則注入後的回升}
+於修正後的 clean valid（42 筆、無洩漏）以 \texttt{Llama-3.1-8B-Instruct}（HF in-process）重評：
+v1 baseline 與 v2（加 Domain-Brand Mismatch 規則）的 Precision/Recall/F1 \textbf{皆為 0/0/0}
+（TP=0、FN=18）。原因有二：(1) 這 18 個 clean 釣魚頁多為\textbf{被入侵的正常站、博弈或 free-host}，
+\textbf{並非品牌仿冒頁}，可見文字未提及已知品牌，故 v2 的品牌-網域規則無從觸發；(2) 其 gold 標籤
+係由 \textbf{URL 啟發式}（可疑 TLD、裸 IP、短網址等）自動產生，而文字分支僅讀頁面文字、看不到這些
+訊號，形成\textbf{標註--任務錯配}。對照同一 8B 模型於 \textbf{URL 分支達 F1 0.84}，可知判別訊號存在於
+\textbf{URL/網域結構}，而非頁面可見文字或品牌提及——此結果強力佐證多軌（尤其 URL 軌）設計之必要，
+並說明純文字軌對非品牌仿冒型釣魚先天無效。
 
 \subsection{URL 分支（base，未微調）}
 \begin{table}[h]

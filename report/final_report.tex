@@ -186,7 +186,7 @@ v1 baseline 與 v2（加 Domain-Brand Mismatch 規則）的 Precision/Recall/F1 
 \midrule
 \texttt{llama3.2:3b}（baseline） & 0.750 & 0.200 & 0.316 & 0.067 & 34688 \\
 \texttt{Llama-3.1-8B-Instruct} & 0.813 & \textbf{0.867} & \textbf{0.839} & 0.200 & 4368 \\
-\texttt{Llama-3.1-8B-Instruct}+LoRA & \todo{微調後} & \todo{} & \todo{} & \todo{} & \todo{} \\
+\texttt{Llama-3.1-8B-Instruct}+LoRA & \multicolumn{5}{c}{（未來工作，見 §LoRA）} \\
 \bottomrule
 \end{tabular}
 \caption{3b 高 Precision、極低 Recall：只抓得到尖叫式釣魚（paypal+login+cgi-bin、\texttt{.exe}），
@@ -237,8 +237,18 @@ B：fuse(url+text+visual) & 0.569 & \textbf{0.881} & \textbf{0.692} & 0.277 & $W
 其價值在品牌仿冒/QR 型案例（由 QR 模組與視覺 Precision 0.93 佐證）。}
 \end{table}
 
-\subsection{LoRA 微調前後（文字 / URL）}
-\todo{以同一 evaluation pipeline 量測 base vs LoRA 之 F1 提升幅度}
+\subsection{LoRA 微調（質化觀察）}
+實作端已於 Unsloth Studio 對文字分支進行 QLoRA 微調（\texttt{unsloth/llama-3-8b-bnb-4bit}，
+4-bit、LoRA rank 16、context 2048、lr 2e-4，30 steps）。訓練 loss 由約 2.1 收斂至 1.6，eval loss
+收斂至約 1.5，顯示模型已學會輸出格式與任務結構、且於驗證集無明顯過擬合。
+
+然而推論測試出現三類問題：(1) 產生與 \texttt{risk\_score} 不一致的 reason；(2) 欄位名稱拼寫錯誤；
+(3) 過度引用訓練資料的固定敘述（如「URL was labeled good in training data」）。此即典型的
+\textbf{Dataset Shortcut}：在資料量偏少、且標註含啟發式捷徑訊號時，模型傾向記憶捷徑而非學習語意。
+改進方向為擴充 Hard Samples、重構 reason 欄位內容，並以 Teacher VLM 重新標註。
+
+URL 分支已備妥 1:1 平衡的 \texttt{url\_train.jsonl}（540 筆），其 gold 理由正好教導 URL 啟發式特徵，
+為後續以 LoRA 進一步提升 URL 分支 Recall 之自然延伸（列為未來工作；須注意同一捷徑風險）。
 
 %==========================================================
 \section{架構限制與改進方向 (Architectural Limitations)}

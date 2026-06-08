@@ -18,7 +18,7 @@ Mac 端（3b）只做架構/腳本調通，**正式數字請在這台機器用 8
 跨機器比較與報告數字一律以 8b 為準；3b 僅供 Mac 端 smoke test。
 
 > 延伸：`datasets/training_data/url_only_1to1/url_train.jsonl`（540 筆、1:1）gold 理由
-> 正好在教這些 URL 特徵，**適合拿去 LoRA**，預期把 recall 大幅拉升 —— 這就是「為什麼要 fine-tune」的實證。
+> 正好在教這些 URL 特徵，**適合拿去 LoRA**，預期把 recall 大幅拉升，這就是「為什麼要 fine-tune」的實證。
 
 模型透過環境變數切換（預設值見各腳本）：
 

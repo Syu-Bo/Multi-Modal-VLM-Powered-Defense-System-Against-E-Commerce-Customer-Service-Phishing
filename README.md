@@ -7,7 +7,7 @@ Multi-Modal VLM-Powered Defense System Against E-Commerce & Customer-Service Phi
 
 傳統釣魚偵測依賴網域黑名單或純文字語意分析，對「圖片化訊息」「藏惡意 QR Code 的截圖」與
 「像素級仿冒官方 UI 的假登入頁」存在盲區。本專案提出開源、可在地化部署的**雙軌制多模態防禦
-管道**：以 VLM 辨識品牌仿冒與 UI 異常、以 LLM 剖析文字社交工程意圖，再由融合模塊產出結構化
+管道**：以 VLM 辨識品牌仿冒與 UI 異常、以 LLM 剖析文字社交工程意圖，再由融合模組產出結構化
 威脅報告。
 
 ## 架構
@@ -25,7 +25,7 @@ Multi-Modal VLM-Powered Defense System Against E-Commerce & Customer-Service Phi
    結構化威脅報告（危險等級 / 緩解建議）
 ```
 
-各分支統一輸出可被融合模塊解析的 JSON：`risk_score, confidence, reasons, suspicious_phrases,
+各分支統一輸出可被融合模組解析的 JSON：`risk_score, confidence, reasons, suspicious_phrases,
 detected_language`。`risk_score ≥ 0.7` 判定為釣魚。
 
 ## Repo 結構
@@ -82,7 +82,7 @@ EVAL_MODEL=llama3.1:8b python eval/run_eval_v2.py
 python eval/run_eval_visual.py --dry-run --limit 3
 VISION_MODEL=qwen2-vl python eval/run_eval_visual.py
 
-# 4) 融合（143 頁對齊集）— 詳見 RUN_SHEET ④
+# 4) 融合（143 頁對齊集），詳見 RUN_SHEET ④
 python datasets/build_fusion_testset.py
 # ... 在對齊集上跑 text + visual，再 run_eval_fusion.py
 

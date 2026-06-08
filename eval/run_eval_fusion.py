@@ -90,8 +90,10 @@ def main():
     ap.add_argument("--text-results", type=Path, default=RESULTS_DIR / "prompt_v2_results.json")
     ap.add_argument("--text-data", type=Path, default=PROJECT_ROOT / "datasets" / "text_valid.jsonl")
     ap.add_argument("--visual-results", type=Path, default=RESULTS_DIR / "visual_results.json")
+    ap.add_argument("--url-results", type=Path, default=None,
+                    help="optional: enables URL-anchored 3-way fusion (URL+text+visual)")
     ap.add_argument("--weights", type=str, default="0.3,0.4,0.5,0.55,0.6,0.7",
-                    help="comma-separated Wv values to grid-search")
+                    help="comma-separated Wv values to grid-search (2-way text+visual)")
     args = ap.parse_args()
 
     text = load_text(args.text_results, args.text_data)
@@ -125,6 +127,35 @@ def main():
         grid.append(m)
     best = max(grid, key=lambda m: m["f1"])
 
+    # ---- optional 3-way URL-anchored fusion (URL + text + visual) ----
+    three = None
+    if args.url_results:
+        url = load_visual(args.url_results)  # by-url loader (one score per page)
+        shared3 = sorted(set(text) & set(visual) & set(url))
+        if shared3:
+            yt = [text[u]["true"] for u in shared3]
+            us = [url[u]["score"] for u in shared3]
+            ts = [text[u]["score"] for u in shared3]
+            vs = [visual[u]["score"] for u in shared3]
+            steps = [i / 10 for i in range(11)]
+            grid3 = []
+            for wu in steps:
+                for wt in steps:
+                    wv = round(1.0 - wu - wt, 3)
+                    if wv < -1e-9:
+                        continue
+                    pred = [label(wu * u + wt * t + wv * v) for u, t, v in zip(us, ts, vs)]
+                    m = metrics_for(yt, pred)
+                    m["Wu"], m["Wt"], m["Wv"] = round(wu, 3), round(wt, 3), wv
+                    grid3.append(m)
+            three = {
+                "matched_pages": len(shared3),
+                "url_only": metrics_for(yt, [label(s) for s in us]),
+                "text_only": metrics_for(yt, [label(s) for s in ts]),
+                "visual_only": metrics_for(yt, [label(s) for s in vs]),
+                "best_fusion": max(grid3, key=lambda m: m["f1"]),
+            }
+
     out = {
         "matched_pages": len(shared),
         "text_pages": len(text),
@@ -134,9 +165,11 @@ def main():
         "visual_only": visual_only,
         "fusion_grid": grid,
         "best_fusion": best,
+        "three_way": three,
         "sources": {
             "text_results": str(args.text_results),
             "visual_results": str(args.visual_results),
+            "url_results": str(args.url_results) if args.url_results else None,
         },
     }
     out_path = RESULTS_DIR / "fusion_results.json"
@@ -151,8 +184,19 @@ def main():
     print(row("visual-only", visual_only))
     for m in grid:
         print(row(f"fuse Wv={m['Wv']}", m))
-    print(f"\nBest fusion: Wv={best['Wv']} Wt={best['Wt']}  F1={best['f1']}")
+    print(f"\nBest 2-way fusion (text+visual): Wv={best['Wv']} Wt={best['Wt']}  F1={best['f1']}")
     print(f"label disagreements text vs visual: {disagree}/{len(shared)}")
+
+    if three:
+        b = three["best_fusion"]
+        print("\n========== 3-way URL-anchored fusion (matched pages = %d) ==========" % three["matched_pages"])
+        print(f"{'branch':<14} {'n':>4}  {'prec':>5}  {'rec':>5}  {'f1':>5}  {'fpr':>5}")
+        print(row("url-only", three["url_only"]))
+        print(row("text-only", three["text_only"]))
+        print(row("visual-only", three["visual_only"]))
+        print(row("fuse(U+T+V)", b))
+        print(f"\nBest 3-way: Wu={b['Wu']} Wt={b['Wt']} Wv={b['Wv']}  F1={b['f1']}")
+
     print(f"\n結果已儲存到：{out_path}")
 
 

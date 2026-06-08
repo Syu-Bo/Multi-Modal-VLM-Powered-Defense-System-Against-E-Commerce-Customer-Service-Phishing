@@ -31,6 +31,16 @@ OUT_DIR = HERE / "fusion_test"
 URL_RE = re.compile(r"Page URL:\s*(\S+)")
 ALERT = 0.7
 
+URL_SYSTEM_PROMPT = """\
+You are a defensive cybersecurity analyst specializing in URL-only phishing detection.
+Judge whether the page is phishing using ONLY the URL string (suspicious TLD, bare IP,
+URL shortener, brand token vs registrable domain, credential/payment path, excessive
+digits/hyphens). Do not assume page content or images.
+
+Respond with a single JSON object only:
+{"risk_score": float in [0,1], "confidence": float in [0,1], "reasons": [string, ...],
+ "suspicious_phrases": [string, ...], "detected_language": string | null}"""
+
 
 def page_url(text):
     m = URL_RE.search(text or "")
@@ -97,6 +107,19 @@ def main():
         for url in shared:
             f.write(json.dumps(text[url][0], ensure_ascii=False) + "\n")
 
+    # url_fusion.jsonl — same pages, URL-only task (for the 3-way fusion's URL track).
+    # Keeps "Page URL:" so run_eval_hf.py captures page_url for the fusion join.
+    with (OUT_DIR / "url_fusion.jsonl").open("w", encoding="utf-8") as f:
+        for url in shared:
+            row = {"messages": [
+                {"role": "system", "content": URL_SYSTEM_PROMPT},
+                {"role": "user", "content":
+                    "Classify this page using ONLY the URL string. Return JSON only.\n"
+                    f"Page URL: {url}"},
+                {"role": "assistant", "content": text[url][0]["messages"][2]["content"]},
+            ]}
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+
     # visual_fusion.parquet — all screenshots for shared pages
     visual_rows = [r for url in shared for r in visual[url]]
     pq.write_table(pa.Table.from_pylist(visual_rows, schema=schema),
@@ -115,6 +138,7 @@ def main():
     print(f"shared pages         : {len(shared)}")
     print(f"  phishing / benign  : {n_phish} / {len(shared) - n_phish}")
     print(f"text rows written    : {len(shared)}  -> fusion_test/text_fusion.jsonl")
+    print(f"url rows written     : {len(shared)}  -> fusion_test/url_fusion.jsonl")
     print(f"visual rows written  : {len(visual_rows)}  -> fusion_test/visual_fusion.parquet")
     print(f"pages.csv            : fusion_test/pages.csv")
 
